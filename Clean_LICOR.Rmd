@@ -1,0 +1,46 @@
+---
+title: "ACi Curve Parametrization"
+author: "Bridger Huhn, Ben Romanjenko, Alex Fox"
+date: "5/26/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Purpose
+
+This script will walk you through taking a raw LI-6400 A-Ci curve file and getting the relevant parameters off of it
+
+# 1. Manual Work
+
+This program is designed to work with LI-6400 manual remarks in the format `<replicate>_<measurement type>`, for example "6_light" for light curve \\#6, or "23_ACi" for A-Ci curve number 23.
+
+The first step is to add this information to the raw `.xlsx` files if it isn't already there, and then to save those files as `.csv`s.
+
+# 2. Clean raw data
+
+Wrangle the raw data into a workable dataframe.
+
+```{r workingdir}
+# this line automatically sets the wd to the parent directory of this script.
+# You can also specify this manually.
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+# this line finds all those .csv files you just made. Change the regex search string to fit your data storage structure
+allFiles <- Sys.glob("./DATA/2022GH/LICOR/*.csv")
+```
+
+```{r sourcethings}
+library(tidyverse)
+# Get the functions needed to clean the raw files. Make sure that this points towards the correct source file. If you cloned this from the github, there should be no problems
+source("LICOR_6400_Cleaner.R")
+```
+
+```{r cleanraw}
+# load the clean data into a dataframe and save it
+dat <- clean_raw_csvs(allFiles)
+write_csv(dat, "./DATA/2022GH/Clean_LICOR.csv")
+dat <- read_csv("./DATA/2022GH/Clean_LICOR.csv")
+```
