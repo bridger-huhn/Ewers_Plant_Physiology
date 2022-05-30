@@ -40,7 +40,7 @@ source("LICOR_6400_Cleaner.R")
 
 ```{r cleanraw}
 # load the clean data into a dataframe and save it
-dat <- clean_raw_csvs(allFiles)
+dat <- clean_raw_csvs(filepath) ### put the file that contains all of your .csv files into this function
 write_csv(dat, "./DATA/2022GH/Clean_LICOR.csv")
 dat <- read_csv("./DATA/2022GH/Clean_LICOR.csv")
 ```

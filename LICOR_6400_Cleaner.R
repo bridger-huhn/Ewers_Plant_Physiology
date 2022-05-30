@@ -51,14 +51,21 @@ LC<-function(dat){
   return(dat)
 }
 
-clean_raw_csvs <- function(allFiles){
+
+## this function puts all of the files in one data frame. Put the file path into this function.
+clean_raw_csvs <- function(filepath){
+  setwd(filepath) ### change this line to be your file path
+  
+  #gets all files with the given file type should be .csv
+  allFiles<-list.files(pattern = "*.csv")
+  
   outDF <- data.frame() ### creates a dataframe to store
   
   ## this for-loop combines all the files into one big file
   for (i in 1:length(allFiles)){
     #for the current file read it in
     dat<- read.csv(allFiles[i], row.names = NULL)
-    
+    #dat$filename <- allFiles[i]
     #puts meta data in a column
     meta<- dat[1,1]
     #stores the dat in which this file was created
@@ -72,6 +79,7 @@ clean_raw_csvs <- function(allFiles){
     ### some irgas have Mch columns, this removes those
     dat <-dat[,-(which(grepl("Mch",names(dat))))]
     dat <- dat[,-82]
+    dat$filename <- allFiles[i]
     #binds data frames together
     outDF <- rbind(outDF, dat)
   }
